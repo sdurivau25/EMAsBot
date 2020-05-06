@@ -1758,7 +1758,7 @@ class Bot(Thread) :
         self.firstvalue = float(self.your_base)+float(self.your_quote)*float(self.client.get_ticker(self.paire)['price'])
         self.continuer=True
         self.paused = False
-        self.last_telegram_id = requests.get('https://api.telegram.org/bot' + self.bot_token + '/getUpdates?chat_id=' + self.bot_chatID).json()['result'][-1]['message']['date']
+        self.last_telegram_id = requests.get('https://api.telegram.org/bot' + self.bot_token + '/getUpdates?chat_id=' + bot_chatID1).json()['result'][-1]['message']['date']
 
         
     def log(self, message:str):
@@ -1775,15 +1775,14 @@ class Bot(Thread) :
     
     def telegram_bot_sendtext(self, bot_message):
         self.bot_token = bot_token1
-        self.bot_chatID = self.bot_chatID
-        send_text = 'https://api.telegram.org/bot' + self.bot_token + '/sendMessage?chat_id=' + self.bot_chatID + '&parse_mode=Markdown&text=' + bot_message
-        response = requests.get(send_text)
-        return response.json()
+        self.send_text = 'https://api.telegram.org/bot' + self.bot_token + '/sendMessage?chat_id=' + self.bot_chatID + '&parse_mode=Markdown&text=' + bot_message
+        self.response = requests.get(self.send_text)
+        return self.response.json()
         
     def telegram_answer(self):
-        get = 'https://api.telegram.org/bot' + self.bot_token + '/getUpdates?chat_id=' + self.bot_chatID
-        response = requests.get(get)
-        self.id = response.json()['result'][-1]['message']
+        self.get = 'https://api.telegram.org/bot' + self.bot_token + '/getUpdates?chat_id=' + self.bot_chatID
+        self.response = requests.get(self.get)
+        self.id = self.response.json()['result'][-1]['message']
         if self.id['date'] != self.last_telegram_id:
             self.wallet()
             self.ask=self.id['text']
@@ -1795,7 +1794,7 @@ class Bot(Thread) :
             elif self.ask == '/wallet' :
                 self.answer = 'Your wallet is worth {} {}'.format(self.walletvalue, self.base)
             elif self.ask == '/credits':
-                self.answer = """Credits to Plytraid. Please consider tipping me for my work :
+                self.answer = """Credits to Stanislas du Rivau. Please consider tipping me for my work :
 BTC
 1F7b9ocDCqLtoDX9kbCQJo1T9q5ZMZjezm
 
@@ -2007,11 +2006,7 @@ class NotifBot(Thread):
                     
     def run(self):
         while self.continuer == True:
-            while bots != []:
-                for b in bots:
-                    id = b.bot_chatID
-                    b.telegram_answer()             
-                    sleep(0.5)
+            Bot.telegram_answer()             
             sleep(0.5)
             
 class LogBot(Thread):
@@ -2199,6 +2194,7 @@ while True:
         else:
             notifbot.continuer = False
             del notifbot
+            print('notifbot stopped')
    
         
     else:
