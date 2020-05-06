@@ -1795,7 +1795,7 @@ class Bot(Thread) :
             elif self.ask == '/wallet' :
                 self.answer = 'Your wallet is worth {} {}'.format(self.walletvalue, self.base)
             elif self.ask == '/credits':
-                self.answer = """Credits to Stanislas du Rivau. Please consider tipping me for my work :
+                self.answer = """Credits to Plytraid. Please consider tipping me for my work :
 BTC
 1F7b9ocDCqLtoDX9kbCQJo1T9q5ZMZjezm
 
